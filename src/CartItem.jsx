@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useGlobalContext } from "./context";
 const CartItem = () => {
   const { products, increment, decrement } = useGlobalContext();
