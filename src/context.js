@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { createContext, useContext, useState } from "react";
 import data from "./data";
 
@@ -6,6 +5,7 @@ const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
   const [products, setProducts] = useState(data);
+  const [cartAmount, setCartAmount] = useState(4);
 
   const increment = (id) => {
     let product = products.find((item) => item.id === id);
@@ -22,15 +22,25 @@ export const AppProvider = ({ children }) => {
     // setProducts(p) -> reference not changing hence state not re-rendering
 
     setProducts([...products]);
+    addToCart();
   };
 
   const decrement = (id) => {
     let product = products.find((item) => item.id === id);
     if (product.amount !== 0) product.amount -= 1;
     setProducts([...products]);
+    addToCart();
   };
 
-  const value = { products, increment, decrement };
+  const addToCart = () => {
+    const totalItems = products.reduce((totalValue, currentProduct) => {
+      return totalValue + currentProduct.amount;
+    }, 0);
+
+    setCartAmount(totalItems);
+  };
+
+  const value = { products, increment, decrement, cartAmount };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
