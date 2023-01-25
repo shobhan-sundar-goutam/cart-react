@@ -3,9 +3,13 @@ import data from "./data";
 
 const AppContext = createContext();
 
+const initialCartAmount = data.reduce((total, currentProduct) => {
+  return total + currentProduct.amount;
+}, 0);
+
 export const AppProvider = ({ children }) => {
   const [products, setProducts] = useState(data);
-  const [cartAmount, setCartAmount] = useState(4);
+  const [cartAmount, setCartAmount] = useState(initialCartAmount);
 
   const increment = (id) => {
     let product = products.find((item) => item.id === id);
