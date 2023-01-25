@@ -24,7 +24,13 @@ export const AppProvider = ({ children }) => {
     setProducts([...products]);
   };
 
-  const value = { products, increment };
+  const decrement = (id) => {
+    let product = products.find((item) => item.id === id);
+    if (product.amount !== 0) product.amount -= 1;
+    setProducts([...products]);
+  };
+
+  const value = { products, increment, decrement };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };

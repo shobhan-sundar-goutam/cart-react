@@ -1,15 +1,11 @@
 import { useEffect } from "react";
 import { useGlobalContext } from "./context";
 const CartItem = () => {
-  const { products, increment } = useGlobalContext();
+  const { products, increment, decrement } = useGlobalContext();
 
-  // useEffect(() => {
-  //   console.log(products);
-  // }, [products]);
   return (
     <div>
       {products.map((product) => {
-        // console.log(products);
         const { id, title, price, img, amount } = product;
         return (
           <article className="cart-item" key={id}>
@@ -26,7 +22,7 @@ const CartItem = () => {
                 </svg>
               </button>
               <p className="amount">{amount}</p>
-              <button className="amount-btn">
+              <button className="amount-btn" onClick={() => decrement(id)}>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                   <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"></path>
                 </svg>
