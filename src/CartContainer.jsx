@@ -1,6 +1,8 @@
 import CartItem from "./CartItem";
+import { useGlobalContext } from "./context";
 
 const CartContainer = () => {
+  const { totalPrice } = useGlobalContext();
   return (
     <section className="cart">
       <header>
@@ -12,7 +14,7 @@ const CartContainer = () => {
         <div className="cart-total">
           <h4>
             total
-            <span>$2199.96</span>
+            <span>${totalPrice}</span>
           </h4>
         </div>
         <button className="btn clear-btn">clear cart</button>

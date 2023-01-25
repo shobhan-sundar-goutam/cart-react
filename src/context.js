@@ -7,9 +7,17 @@ const initialCartAmount = data.reduce((total, currentProduct) => {
   return total + currentProduct.amount;
 }, 0);
 
+let initalTotalPrice = data
+  .map((product) => {
+    return product.amount * product.price;
+  })
+  .reduce((x, y) => x + y, 0);
+initalTotalPrice = parseFloat(initalTotalPrice.toFixed(2));
+
 export const AppProvider = ({ children }) => {
   const [products, setProducts] = useState(data);
   const [cartAmount, setCartAmount] = useState(initialCartAmount);
+  const [totalPrice, setTotalPrice] = useState(initalTotalPrice);
 
   const increment = (id) => {
     let product = products.find((item) => item.id === id);
@@ -27,6 +35,7 @@ export const AppProvider = ({ children }) => {
 
     setProducts([...products]);
     addToCart();
+    totaBill();
   };
 
   const decrement = (id) => {
@@ -34,6 +43,7 @@ export const AppProvider = ({ children }) => {
     if (product.amount !== 0) product.amount -= 1;
     setProducts([...products]);
     addToCart();
+    totaBill();
   };
 
   const addToCart = () => {
@@ -44,7 +54,17 @@ export const AppProvider = ({ children }) => {
     setCartAmount(totalItems);
   };
 
-  const value = { products, increment, decrement, cartAmount };
+  const totaBill = () => {
+    let totalBillAmount = products
+      .map((product) => {
+        return product.amount * product.price;
+      })
+      .reduce((x, y) => x + y, 0);
+    totalBillAmount = parseFloat(totalBillAmount.toFixed(2));
+    setTotalPrice(totalBillAmount);
+  };
+
+  const value = { products, increment, decrement, cartAmount, totalPrice };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
