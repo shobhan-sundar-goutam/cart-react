@@ -1,6 +1,6 @@
 import { useGlobalContext } from "./context";
 const CartItem = () => {
-  const { products, increment, decrement } = useGlobalContext();
+  const { products, increment, decrement, remove } = useGlobalContext();
 
   return (
     <div>
@@ -12,7 +12,9 @@ const CartItem = () => {
             <div>
               <h4>{title}</h4>
               <h4 className="item-price">${price}</h4>
-              <button className="remove-btn">remove</button>
+              <button className="remove-btn" onClick={() => remove(id)}>
+                remove
+              </button>
             </div>
             <div>
               <button className="amount-btn" onClick={() => increment(id)}>

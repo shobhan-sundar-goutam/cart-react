@@ -20,7 +20,7 @@ export const AppProvider = ({ children }) => {
   const [totalPrice, setTotalPrice] = useState(initalTotalPrice);
 
   const increment = (id) => {
-    let product = products.find((item) => item.id === id);
+    const product = products.find((item) => item.id === id);
     product.amount += 1;
 
     // setProducts(products); -> This wasn't re-rendereing the component as its reference is not chandging, only it's values are changing, for which useState was not considering it as a state change, so it was not triggering re-render
@@ -39,9 +39,18 @@ export const AppProvider = ({ children }) => {
   };
 
   const decrement = (id) => {
-    let product = products.find((item) => item.id === id);
+    const product = products.find((item) => item.id === id);
     if (product.amount !== 0) product.amount -= 1;
     setProducts([...products]);
+    addToCart();
+    totaBill();
+  };
+
+  const remove = (id) => {
+    const newList = products.filter((product) => product.id !== id);
+    // console.log(newList);
+    setProducts(products);
+    console.log(products);
     addToCart();
     totaBill();
   };
@@ -64,7 +73,14 @@ export const AppProvider = ({ children }) => {
     setTotalPrice(totalBillAmount);
   };
 
-  const value = { products, increment, decrement, cartAmount, totalPrice };
+  const value = {
+    products,
+    increment,
+    decrement,
+    cartAmount,
+    totalPrice,
+    remove,
+  };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
