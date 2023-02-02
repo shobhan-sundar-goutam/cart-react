@@ -1,23 +1,27 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import data from "./data";
+// import axios from "axios";
+// import data from "./data";
+
+const url = "https://course-api.com/react-useReducer-cart-project";
 
 const AppContext = createContext();
 
-const initialCartAmount = data.reduce((total, currentProduct) => {
-  return total + currentProduct.amount;
-}, 0);
+// const initialCartAmount = data.reduce((total, currentProduct) => {
+//   return total + currentProduct.amount;
+// }, 0);
 
-let initalTotalPrice = data
-  .map((product) => {
-    return product.amount * product.price;
-  })
-  .reduce((x, y) => x + y, 0);
-initalTotalPrice = parseFloat(initalTotalPrice.toFixed(2));
+// let initalTotalPrice = data
+//   .map((product) => {
+//     return product.amount * product.price;
+//   })
+//   .reduce((x, y) => x + y, 0);
+// initalTotalPrice = parseFloat(initalTotalPrice.toFixed(2));
 
 export const AppProvider = ({ children }) => {
-  const [products, setProducts] = useState(data);
-  const [cartAmount, setCartAmount] = useState(initialCartAmount);
-  const [totalPrice, setTotalPrice] = useState(initalTotalPrice);
+  const [products, setProducts] = useState([]);
+  const [cartAmount, setCartAmount] = useState();
+  const [totalPrice, setTotalPrice] = useState();
+  const [loading, setLoading] = useState(true);
 
   const increment = (id) => {
     const product = products.find((item) => item.id === id);
@@ -58,7 +62,6 @@ export const AppProvider = ({ children }) => {
     const totalItems = products.reduce((totalValue, currentProduct) => {
       return totalValue + currentProduct.amount;
     }, 0);
-
     setCartAmount(totalItems);
   };
 
@@ -72,6 +75,22 @@ export const AppProvider = ({ children }) => {
     setTotalPrice(totalBillAmount);
   };
 
+  const fetchData = async () => {
+    const response = await fetch(url);
+    const cart = await response.json();
+    setLoading(false);
+    setProducts(cart);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    addToCart();
+    totaBill();
+  });
+
   const value = {
     products,
     increment,
@@ -80,12 +99,8 @@ export const AppProvider = ({ children }) => {
     totalPrice,
     remove,
     clearCart,
+    loading,
   };
-
-  useEffect(() => {
-    addToCart();
-    totaBill();
-  });
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
