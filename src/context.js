@@ -39,12 +39,19 @@ export const AppProvider = ({ children }) => {
   const decrement = (id) => {
     const product = products.find((item) => item.id === id);
     if (product.amount !== 0) product.amount -= 1;
+    if (product.amount === 0) {
+      return remove(id);
+    }
     setProducts([...products]);
   };
 
   const remove = (id) => {
     const newList = products.filter((product) => product.id !== id);
     setProducts(newList);
+  };
+
+  const clearCart = () => {
+    setProducts([]);
   };
 
   const addToCart = () => {
@@ -72,6 +79,7 @@ export const AppProvider = ({ children }) => {
     cartAmount,
     totalPrice,
     remove,
+    clearCart,
   };
 
   useEffect(() => {
