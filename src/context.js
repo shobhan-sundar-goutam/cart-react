@@ -1,21 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
-// import axios from "axios";
-// import data from "./data";
 
 const url = "https://course-api.com/react-useReducer-cart-project";
 
 const AppContext = createContext();
-
-// const initialCartAmount = data.reduce((total, currentProduct) => {
-//   return total + currentProduct.amount;
-// }, 0);
-
-// let initalTotalPrice = data
-//   .map((product) => {
-//     return product.amount * product.price;
-//   })
-//   .reduce((x, y) => x + y, 0);
-// initalTotalPrice = parseFloat(initalTotalPrice.toFixed(2));
 
 export const AppProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
