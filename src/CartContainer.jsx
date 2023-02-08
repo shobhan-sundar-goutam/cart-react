@@ -2,7 +2,8 @@ import CartItem from "./CartItem";
 import { useGlobalContext } from "./context";
 
 const CartContainer = () => {
-  const { totalPrice, clearCart, products } = useGlobalContext();
+  // const { totalPrice, clearCart, products } = useGlobalContext();
+  const { products, totalPrice, dispatch } = useGlobalContext();
   return (
     <section className="cart">
       <header>
@@ -22,7 +23,10 @@ const CartContainer = () => {
                 <span>${totalPrice}</span>
               </h4>
             </div>
-            <button className="btn clear-btn" onClick={clearCart}>
+            <button
+              className="btn clear-btn"
+              onClick={() => dispatch({ type: "CLEAR_CART" })}
+            >
               clear cart
             </button>
           </footer>

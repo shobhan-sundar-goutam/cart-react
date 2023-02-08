@@ -1,16 +1,137 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useReducer } from "react";
 
 const url = "https://course-api.com/react-useReducer-cart-project";
 
 const AppContext = createContext();
 
-export const AppProvider = ({ children }) => {
-  const [products, setProducts] = useState([]);
-  const [cartAmount, setCartAmount] = useState();
-  const [totalPrice, setTotalPrice] = useState();
-  const [loading, setLoading] = useState(true);
+const initialState = {
+  loading: true,
+  products: [],
+  cartAmount: 0,
+  totalPrice: 0,
+};
 
-  const increment = (id) => {
+const reducer = (state, action) => {
+  if (action.type === "INITIAL_VALUE") {
+    return {
+      loading: false,
+      products: action.payload,
+    };
+  }
+
+  if (action.type === "INCREMENT") {
+    const updatedProducts = state.products.map((product) => {
+      if (product.id === action.payload) {
+        return { ...product, amount: product.amount + 1 };
+      }
+      return product;
+    });
+    return { ...state, products: updatedProducts };
+  }
+
+  if (action.type === "DECREMENT") {
+    const updatedProducts = state.products
+      .map((product) => {
+        if (product.id === action.payload) {
+          return { ...product, amount: product.amount - 1 };
+        }
+        return product;
+      })
+      .filter((product) => product.amount !== 0);
+    return { ...state, products: updatedProducts };
+  }
+
+  if (action.type === "REMOVE") {
+    const updatedProducts = state.products.filter(
+      (product) => product.id !== action.payload
+    );
+    return { ...state, products: updatedProducts };
+  }
+
+  if (action.type === "CLEAR_CART") {
+    return { ...state, products: [] };
+  }
+
+  if (action.type === "GET_TOTALS") {
+    let { cartAmount, totalPrice } = state.products.reduce(
+      (totalValues, currentProduct) => {
+        const { price, amount } = currentProduct;
+
+        const productPrice = price * amount;
+
+        totalValues.totalPrice += productPrice;
+        totalValues.cartAmount += amount;
+
+        return totalValues;
+      },
+      { cartAmount: 0, totalPrice: 0 }
+    );
+    totalPrice = parseFloat(totalPrice.toFixed(2));
+    return { ...state, cartAmount, totalPrice };
+  }
+
+  /*switch (action.type) {
+      case "INITIAL_VALUE":
+        return {
+          loading: false,
+          products: action.payload,
+        };
+
+      case "INCREMENT":
+        const updatedProducts = state.products.map((product) => {
+          if (product.id === action.payload) {
+            return { ...product, amount: product.amount + 1 };
+          }
+          return product;
+        });
+        return { ...state, products: updatedProducts };
+
+      case "DECREMENT":
+        const updatedProducts = state.products.map((product) => {
+          if (product.id === action.payload) {
+            return { ...product, amount: product.amount - 1 };
+          }
+          return product;
+        });
+        return { ...state, products: updatedProducts };
+
+      case "GET_TOTALS":
+        let { cartAmount, totalPrice } = state.products.reduce(
+          (totalValues, currentProduct) => {
+            const { price, amount } = currentProduct;
+
+            const productPrice = price * amount;
+
+            totalValues.totalPrice += productPrice;
+            totalValues.cartAmount += amount;
+
+            return totalValues;
+          },
+          { cartAmount: 0, totalPrice: 0 }
+        );
+        totalPrice = parseFloat(totalPrice.toFixed(2));
+        return { ...state, cartAmount, totalPrice };
+
+      default:
+        return state;
+    } */
+};
+
+// const addToCart = (products) => {
+//   products.reduce((totalValue, currentProduct) => {
+//     return totalValue + currentProduct.amount;
+//   }, 0);
+// };
+
+export const AppProvider = ({ children }) => {
+  // const [products, setProducts] = useState([]);
+  // const [cartAmount, setCartAmount] = useState();
+  // const [totalPrice, setTotalPrice] = useState();
+  // const [loading, setLoading] = useState(true);
+
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  /* const increment = (id) => {
     const product = products.find((item) => item.id === id);
     product.amount += 1;
 
@@ -25,9 +146,9 @@ export const AppProvider = ({ children }) => {
     // setProducts(p) -> reference not changing hence state not re-rendering
 
     setProducts([...products]);
-  };
+  }; */
 
-  const decrement = (id) => {
+  /*  const decrement = (id) => {
     const product = products.find((item) => item.id === id);
     if (product.amount !== 0) product.amount -= 1;
     if (product.amount === 0) {
@@ -60,13 +181,15 @@ export const AppProvider = ({ children }) => {
       .reduce((x, y) => x + y, 0);
     totalBillAmount = parseFloat(totalBillAmount.toFixed(2));
     setTotalPrice(totalBillAmount);
-  };
+  }; */
 
   const fetchData = async () => {
     const response = await fetch(url);
     const cart = await response.json();
-    setLoading(false);
-    setProducts(cart);
+    // setLoading(false);
+    // setProducts(cart);
+
+    dispatch({ type: "INITIAL_VALUE", payload: cart });
   };
 
   useEffect(() => {
@@ -74,19 +197,26 @@ export const AppProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
+    dispatch({ type: "GET_TOTALS" });
+  }, [state.products]);
+
+  /* useEffect(() => {
     addToCart();
     totaBill();
-  });
+  }); */
 
   const value = {
-    products,
-    increment,
-    decrement,
-    cartAmount,
-    totalPrice,
-    remove,
-    clearCart,
-    loading,
+    // products,
+    // increment,
+    // decrement,
+    // cartAmount,
+    // totalPrice,
+    // remove,
+    // clearCart,
+    // loading,
+
+    ...state,
+    dispatch,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
