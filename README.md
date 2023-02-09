@@ -20,6 +20,9 @@ First I made it using `useState` and `contextAPI` and then rewritten using `useR
 
 ### Demo
 
+
+https://user-images.githubusercontent.com/81035407/217731923-911fdcb9-2d78-4ff0-b4b5-f541b70c08e3.mp4
+
 ### Socials
 
 [![image](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/shobhan-sundar-goutam/)
